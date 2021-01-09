@@ -5,13 +5,19 @@ export class AddChordController implements Controller {
   constructor (private readonly addChordUsecase: IAddChordUsecase) {}
 
   async handle (httpRequest: HttpRequest): Promise<HttpResponse> {
-    const addedChord = await this.addChordUsecase.exec({
-      symbol: httpRequest.body?.symbol,
-      imagesUrls: httpRequest.body?.imagesUrls
-    })
-    return {
-      statusCode: 200,
-      body: addedChord
+    try {
+      const addedChord = await this.addChordUsecase.exec({
+        symbol: httpRequest.body?.symbol,
+        imagesUrls: httpRequest.body?.imagesUrls
+      })
+      return {
+        statusCode: 200,
+        body: addedChord
+      }
+    } catch (error) {
+      return {
+        statusCode: 500
+      }
     }
   }
 }
