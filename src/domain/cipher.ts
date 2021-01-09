@@ -9,12 +9,10 @@ export interface Row {
 }
 
 export interface Word {
-  characters: Array<SimpleCharacter | CharacterWithChord>
+  characters: Character[]
 }
 
-export interface SimpleCharacter {
+export interface Character {
   char: string
-}
-export interface CharacterWithChord extends SimpleCharacter {
-  chordId: string
+  chordSymbol?: string
 }

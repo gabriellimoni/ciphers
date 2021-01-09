@@ -1,17 +1,30 @@
 import { AddCipherController } from './add-cipher-controller'
+import { ICheckIfChordExistsBySymbolUsecase } from '../../../usecases/check-if-chord-exists-by-symbol-usecase'
 import { badRequest } from '../../helpers/http'
 import { RequiredParamError, InvalidParamError } from '../../errors'
 import { Cipher } from '../../../domain'
 
 interface SutTypes {
   sut: AddCipherController
+  checkIfChordExistsBySymbolStub: ICheckIfChordExistsBySymbolUsecase
 }
 
 const makeSut = (): SutTypes => {
-  const sut = new AddCipherController()
+  const checkIfChordExistsBySymbolStub = makeCheckIfChordExistsBySymbolStub()
+  const sut = new AddCipherController(checkIfChordExistsBySymbolStub)
   return {
-    sut
+    sut,
+    checkIfChordExistsBySymbolStub
   }
+}
+
+const makeCheckIfChordExistsBySymbolStub = (): ICheckIfChordExistsBySymbolUsecase => {
+  class CheckIfChordExistsBySymbolStub implements ICheckIfChordExistsBySymbolUsecase {
+    async exec (symbols: string[]): Promise<boolean> {
+      return false
+    }
+  }
+  return new CheckIfChordExistsBySymbolStub()
 }
 
 const makeFakeCipher = (): Cipher => ({
@@ -24,7 +37,7 @@ const makeFakeCipher = (): Cipher => ({
           characters: [
             {
               char: 'A',
-              chordId: '0as0a90s9a0s90a9s09a'
+              chordSymbol: 'D'
             }
           ]
         }
@@ -124,5 +137,14 @@ describe('AddCipher Controller', () => {
       body: cipherWithNoPropertyCharacter
     })
     expect(response).toEqual(badRequest(new InvalidParamError('rows.word.character')))
+  })
+
+  test('Should return 400 if CheckIfChordExistsBySymbols return true', async () => {
+    const { sut, checkIfChordExistsBySymbolStub } = makeSut()
+    jest.spyOn(checkIfChordExistsBySymbolStub, 'exec').mockReturnValueOnce(new Promise(resolve => resolve(true)))
+    const response = await sut.handle({
+      body: makeFakeCipher()
+    })
+    expect(response).toEqual(badRequest(new InvalidParamError('rows.word.character.chordSymbol')))
   })
 })
