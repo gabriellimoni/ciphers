@@ -1,7 +1,7 @@
 import { Chord } from '../../../domain'
 import { IFindChordBySymbolUsecase } from '../../../usecases/find-chord-by-symbol-usecase'
 import { RequiredParamError } from '../../errors'
-import { badRequest } from '../../helpers/http'
+import { badRequest, ok } from '../../helpers/http'
 import { FindChordBySymbolController } from './find-chord-by-symbol-controller'
 
 interface SutTypes {
@@ -21,15 +21,17 @@ const makeSut = (): SutTypes => {
 const makeFindChordBySymbleRepositoryStub = (): IFindChordBySymbolUsecase => {
   class FindChordBySymbleRepositoryStub implements IFindChordBySymbolUsecase {
     async exec (symbol: string): Promise<Chord> {
-      return {
-        id: 'any_id',
-        symbol: 'any_symbol',
-        imagesUrls: ['any_iamges_urls']
-      }
+      return makeFakeChord()
     }
   }
   return new FindChordBySymbleRepositoryStub()
 }
+
+const makeFakeChord = (): Chord => ({
+  id: 'any_id',
+  symbol: 'any_symbol',
+  imagesUrls: ['any_iamges_urls']
+})
 
 describe('FindChordBySymbol Controller', () => {
   test('Should return 500 if FindChordBySymbol throws', async () => {
@@ -49,5 +51,15 @@ describe('FindChordBySymbol Controller', () => {
       params: {}
     })
     expect(response).toEqual(badRequest(new RequiredParamError('symbol')))
+  })
+
+  test('Should return 200 on success', async () => {
+    const { sut } = makeSut()
+    const response = await sut.handle({
+      params: {
+        symbol: 'any_symbol'
+      }
+    })
+    expect(response).toEqual(ok(makeFakeChord()))
   })
 })
