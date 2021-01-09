@@ -13,3 +13,12 @@ export class EntityAlreadyExistsError extends Error {
     this.name = 'EntityAlreadyExistsError'
   }
 }
+
+export class NotFoundError extends Error {
+  constructor (entity: string, byParam?: string) {
+    let message = `${entity} not found`
+    if (byParam) message += ` with this ${byParam}`
+    super(message)
+    this.name = 'NotFoundError'
+  }
+}

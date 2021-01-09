@@ -1,6 +1,6 @@
 import { IFindChordBySymbolUsecase } from '../../../usecases/find-chord-by-symbol-usecase'
-import { RequiredParamError } from '../../errors'
-import { badRequest, ok, serverError } from '../../helpers/http'
+import { NotFoundError, RequiredParamError } from '../../errors'
+import { badRequest, notFound, ok, serverError } from '../../helpers/http'
 import { Controller, HttpRequest, HttpResponse } from '../../protocols'
 
 export class FindChordBySymbolController implements Controller {
@@ -10,6 +10,7 @@ export class FindChordBySymbolController implements Controller {
       const { symbol } = httpRequest?.params
       if (!symbol) return badRequest(new RequiredParamError('symbol'))
       const chord = await this.findChordBySimbolUsecase.exec(symbol)
+      if (!chord) return notFound(new NotFoundError('Chord', 'symbol'))
       return ok(chord)
     } catch (error) {
       return serverError(error)
