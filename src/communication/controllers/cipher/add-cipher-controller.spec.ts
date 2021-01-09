@@ -1,20 +1,25 @@
 import { AddCipherController } from './add-cipher-controller'
 import { ICheckIfChordExistsBySymbolUsecase } from '../../../usecases/check-if-chord-exists-by-symbol-usecase'
+import { IAddCipherUsecase } from '../../../usecases/add-cipher-usecase'
 import { badRequest } from '../../helpers/http'
 import { RequiredParamError, InvalidParamError } from '../../errors'
 import { Cipher } from '../../../domain'
+import { AddCipherModel } from '../../../usecases/params/chord/add-cipher-param'
 
 interface SutTypes {
   sut: AddCipherController
   checkIfChordExistsBySymbolStub: ICheckIfChordExistsBySymbolUsecase
+  addCipherStub: IAddCipherUsecase
 }
 
 const makeSut = (): SutTypes => {
   const checkIfChordExistsBySymbolStub = makeCheckIfChordExistsBySymbolStub()
-  const sut = new AddCipherController(checkIfChordExistsBySymbolStub)
+  const addCipherStub = makeAddCipherStub()
+  const sut = new AddCipherController(checkIfChordExistsBySymbolStub, addCipherStub)
   return {
     sut,
-    checkIfChordExistsBySymbolStub
+    checkIfChordExistsBySymbolStub,
+    addCipherStub
   }
 }
 
@@ -25,6 +30,15 @@ const makeCheckIfChordExistsBySymbolStub = (): ICheckIfChordExistsBySymbolUsecas
     }
   }
   return new CheckIfChordExistsBySymbolStub()
+}
+
+const makeAddCipherStub = (): IAddCipherUsecase => {
+  class AddCipherStub implements IAddCipherUsecase {
+    async exec (cipherToAdd: AddCipherModel): Promise<Cipher> {
+      return makeFakeCipher()
+    }
+  }
+  return new AddCipherStub()
 }
 
 const makeFakeCipher = (): Cipher => ({
@@ -146,5 +160,14 @@ describe('AddCipher Controller', () => {
       body: makeFakeCipher()
     })
     expect(response).toEqual(badRequest(new InvalidParamError('rows.word.character.chordSymbol')))
+  })
+
+  test('Should return 500 if CheckIfChordExistsBySymbols throws', async () => {
+    const { sut, checkIfChordExistsBySymbolStub } = makeSut()
+    jest.spyOn(checkIfChordExistsBySymbolStub, 'exec').mockReturnValueOnce(new Promise((resolve, reject) => reject(new Error())))
+    const response = await sut.handle({
+      body: makeFakeCipher()
+    })
+    expect(response.statusCode).toBe(500)
   })
 })
