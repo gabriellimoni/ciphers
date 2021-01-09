@@ -65,4 +65,13 @@ describe('AddChord Usecase', () => {
     })
     expect(chord).toBeNull()
   })
+
+  test('Should return Chord on success', async () => {
+    const { sut } = makeSut()
+    const chord = await sut.exec({
+      imagesUrls: ['any_imageUrl'],
+      symbol: 'any_symbol'
+    })
+    expect(chord).toEqual(makeFakeChord())
+  })
 })
