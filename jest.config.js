@@ -5,6 +5,7 @@ module.exports = {
     '!<rootDir>/src/**/*-protocols.ts',
     '!<rootDir>/src/domain/**',
     '!<rootDir>/src/main/**',
+    '!<rootDir>/src/usecases/**/params/**',
     '!**/protocols/**'
   ],
   coverageDirectory: 'coverage',
