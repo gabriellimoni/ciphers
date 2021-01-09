@@ -1,7 +1,7 @@
 import express from 'express'
 import { adaptRoute } from './adapters/express/controllerAdapter'
-import { makeAddChordController } from './factories/controllers/addChordController'
-import { makeFindChordBySymbolController } from './factories/controllers/findChordBySymbolController'
+import { makeAddChordController } from './factories/controllers/add-chord-controller-fac'
+import { makeFindChordBySymbolController } from './factories/controllers/find-chord-by-bymbol-controller-fac'
 
 export const app = express()
 const router = express.Router()
