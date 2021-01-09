@@ -1,5 +1,5 @@
 import { IAddChordUsecase } from '../../../usecases/add-chord-usecase'
-import { RequiredParamError } from '../../errors'
+import { EntityAlreadyExistsError, RequiredParamError } from '../../errors'
 import { badRequest, ok, serverError } from '../../helpers/http'
 import { Controller, HttpRequest, HttpResponse } from '../../protocols'
 
@@ -18,8 +18,12 @@ export class AddChordController implements Controller {
         symbol: httpRequest.body?.symbol,
         imagesUrls: httpRequest.body?.imagesUrls
       })
+      if (!addedChord) {
+        return badRequest(new EntityAlreadyExistsError('Chord', 'symbol'))
+      }
       return ok(addedChord)
     } catch (error) {
+      console.log(error)
       return serverError(error)
     }
   }

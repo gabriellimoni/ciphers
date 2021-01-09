@@ -4,3 +4,12 @@ export class RequiredParamError extends Error {
     this.name = 'RequiredParamError'
   }
 }
+
+export class EntityAlreadyExistsError extends Error {
+  constructor (entity: string, byParam?: string) {
+    let message = `${entity} already exists`
+    if (byParam) message += ` with this ${byParam}`
+    super(message)
+    this.name = 'EntityAlreadyExistsError'
+  }
+}
