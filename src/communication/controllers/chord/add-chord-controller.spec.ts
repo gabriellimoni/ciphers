@@ -1,7 +1,9 @@
 import { Chord } from '../../../domain'
 import { IAddChordUsecase } from '../../../usecases/add-chord-usecase'
 import { AddChordModel } from '../../../usecases/params/chord/add-chord-param'
+import { badRequest } from '../../helpers/http'
 import { AddChordController } from './add-chord-controller'
+import { RequiredParamError } from '../../errors'
 
 interface SutTypes {
   sut: AddChordController
@@ -36,5 +38,25 @@ describe('AddChord Controller', () => {
     jest.spyOn(addChordUsecaseStub, 'exec').mockRejectedValueOnce(new Promise((resolve, reject) => reject(new Error())))
     const response = await sut.handle({})
     expect(response.statusCode).toBe(500)
+  })
+
+  test('Shoudl return 400 if symbol is not provided', async () => {
+    const { sut } = makeSut()
+    const response = await sut.handle({
+      body: {
+        imagesUrls: ['any_iamges_urls']
+      }
+    })
+    expect(response).toEqual(badRequest(new RequiredParamError('symbol')))
+  })
+
+  test('Shoudl return 400 if imagesUrls is not provided', async () => {
+    const { sut } = makeSut()
+    const response = await sut.handle({
+      body: {
+        symbol: 'any_symbol'
+      }
+    })
+    expect(response).toEqual(badRequest(new RequiredParamError('imagesUrls')))
   })
 })
