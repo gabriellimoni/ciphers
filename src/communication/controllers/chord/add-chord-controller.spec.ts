@@ -76,4 +76,16 @@ describe('AddChord Controller', () => {
     })
     expect(response).toEqual(badRequest(new EntityAlreadyExistsError('Chord', 'symbol')))
   })
+
+  test('Shoudl return 200 on success', async () => {
+    const { sut } = makeSut()
+    const response = await sut.handle({
+      body: {
+        symbol: 'any_symbol',
+        imagesUrls: ['any_iamges_urls']
+      }
+    })
+    expect(response.statusCode).toBe(200)
+    expect(response.body.id).toBeTruthy()
+  })
 })
