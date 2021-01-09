@@ -1,1 +1,1 @@
-export * from './chord-repository'
+export * from './add-chord-repository'

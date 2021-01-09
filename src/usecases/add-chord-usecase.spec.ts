@@ -30,7 +30,7 @@ const makeChordRepositoryStub = (): AddChordRepository => {
 }
 
 describe('AddChord Usecase', () => {
-  test('Should thors if ChordRepository.addChord throws', async () => {
+  test('Should throws if AddChordRepository throws', async () => {
     const { sut, addChordRepositoryStub } = makeSut()
     jest.spyOn(addChordRepositoryStub, 'addChord').mockReturnValueOnce(new Promise((resolve, reject) => reject(new Error())))
     const promise = sut.exec({
