@@ -1,5 +1,5 @@
 # Chord
 
 - Add Chord - done
-- Get Chord
+- Get Chord - done
 - Delete Chord
