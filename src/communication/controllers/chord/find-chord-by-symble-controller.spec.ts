@@ -1,5 +1,7 @@
 import { Chord } from '../../../domain'
 import { IFindChordBySymbolUsecase } from '../../../usecases/find-chord-by-symbol-usecase'
+import { RequiredParamError } from '../../errors'
+import { badRequest } from '../../helpers/http'
 import { FindChordBySymbolController } from './find-chord-by-symbol-controller'
 
 interface SutTypes {
@@ -30,10 +32,22 @@ const makeFindChordBySymbleRepositoryStub = (): IFindChordBySymbolUsecase => {
 }
 
 describe('FindChordBySymbol Controller', () => {
-  test('Should return 500 id FindChordBySymbol throws', async () => {
+  test('Should return 500 if FindChordBySymbol throws', async () => {
     const { sut, findChordBySymbleRepositoryStub } = makeSut()
     jest.spyOn(findChordBySymbleRepositoryStub, 'exec').mockReturnValueOnce(new Promise((resolve, reject) => reject(new Error())))
-    const response = await sut.handle({})
+    const response = await sut.handle({
+      params: {
+        symbol: 'any_symbol'
+      }
+    })
     expect(response.statusCode).toBe(500)
+  })
+
+  test('Should return 400 if symbol is not provided', async () => {
+    const { sut } = makeSut()
+    const response = await sut.handle({
+      params: {}
+    })
+    expect(response).toEqual(badRequest(new RequiredParamError('symbol')))
   })
 })
