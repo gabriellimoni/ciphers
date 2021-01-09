@@ -4,7 +4,7 @@ import { IAddCipherUsecase } from '../../../usecases/add-cipher-usecase'
 import { badRequest } from '../../helpers/http'
 import { RequiredParamError, InvalidParamError } from '../../errors'
 import { Cipher } from '../../../domain'
-import { AddCipherModel } from '../../../usecases/params/chord/add-cipher-param'
+import { AddCipherModel } from '../../../usecases/params/cipher/add-cipher-param'
 
 interface SutTypes {
   sut: AddCipherController
@@ -188,5 +188,16 @@ describe('AddCipher Controller', () => {
     expect(response.statusCode).toBe(200)
     expect(response.body.id).toBeTruthy()
     expect(response.body.rows).toBeFalsy()
+  })
+
+  test('Should not call CheckIfChordExistsBySymbols if no chordSymbols exists', async () => {
+    const { sut, checkIfChordExistsBySymbolStubs } = makeSut()
+    const execSpy = jest.spyOn(checkIfChordExistsBySymbolStubs, 'exec')
+    const cipherWithoutChords: any = makeFakeCipher()
+    cipherWithoutChords.rows[0].words[0].characters[0].chordSymbol = undefined
+    await sut.handle({
+      body: cipherWithoutChords
+    })
+    expect(execSpy).toHaveBeenCalledTimes(0)
   })
 })

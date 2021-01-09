@@ -28,8 +28,10 @@ export class AddCipherController implements Controller {
       if (charError) return badRequest(charError)
 
       const allChordSymbols = getAllChordSymbols(cipher)
-      const allChordsExists = await this.checkIfChordExistsBySymbol.exec(allChordSymbols)
-      if (!allChordsExists) return badRequest(new InvalidParamError('rows.word.character.chordSymbol'))
+      if (allChordSymbols.length > 0) {
+        const allChordsExists = await this.checkIfChordExistsBySymbol.exec(allChordSymbols)
+        if (!allChordsExists) return badRequest(new InvalidParamError('rows.word.character.chordSymbol'))
+      }
 
       const createdCipher = await this.addCipher.exec(cipher)
 
