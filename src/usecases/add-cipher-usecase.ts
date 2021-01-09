@@ -1,6 +1,6 @@
 import { AddCipherRepository } from './protocols/chord'
 import { Usecase } from './protocols'
-import { AddCipherModel } from './params/chord/add-cipher-param'
+import { AddCipherModel } from './params/cipher/add-cipher-param'
 import { Cipher } from '../domain'
 
 export interface IAddCipherUsecase extends Usecase<AddCipherModel, Cipher> {}
