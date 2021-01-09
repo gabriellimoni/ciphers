@@ -22,3 +22,9 @@ export class NotFoundError extends Error {
     this.name = 'NotFoundError'
   }
 }
+export class InvalidParamError extends Error {
+  constructor (param: string) {
+    super(`${param} is required`)
+    this.name = 'InvalidParamError'
+  }
+}

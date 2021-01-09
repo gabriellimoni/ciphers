@@ -5,18 +5,16 @@ export interface Cipher {
 }
 
 export interface Row {
-  id: string
   words: Word[]
-  nextRowId: string | null
 }
 
 export interface Word {
-  letters: Letter[]
+  characters: Array<SimpleCharacter | CharacterWithChord>
 }
 
-export interface Letter {
-  character: string
+export interface SimpleCharacter {
+  char: string
 }
-export interface LetterWithChord extends Letter {
+export interface CharacterWithChord extends SimpleCharacter {
   chordId: string
 }
