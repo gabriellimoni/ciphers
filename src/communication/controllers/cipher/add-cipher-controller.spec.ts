@@ -1,5 +1,5 @@
 import { AddCipherController } from './add-cipher-controller'
-import { ICheckIfChordExistsBySymbolUsecase } from '../../../usecases/check-if-chord-exists-by-symbol-usecase'
+import { ICheckIfChordsExistsBySymbolsUsecase } from '../../../usecases/check-if-chords-exists-by-symbols-usecase'
 import { IAddCipherUsecase } from '../../../usecases/add-cipher-usecase'
 import { badRequest } from '../../helpers/http'
 import { RequiredParamError, InvalidParamError } from '../../errors'
@@ -8,7 +8,7 @@ import { AddCipherModel } from '../../../usecases/params/chord/add-cipher-param'
 
 interface SutTypes {
   sut: AddCipherController
-  checkIfChordExistsBySymbolStubs: ICheckIfChordExistsBySymbolUsecase
+  checkIfChordExistsBySymbolStubs: ICheckIfChordsExistsBySymbolsUsecase
   addCipherStub: IAddCipherUsecase
 }
 
@@ -23,10 +23,10 @@ const makeSut = (): SutTypes => {
   }
 }
 
-const makeCheckIfChordExistsBySymbolStub = (): ICheckIfChordExistsBySymbolUsecase => {
-  class CheckIfChordExistsBySymbolStub implements ICheckIfChordExistsBySymbolUsecase {
+const makeCheckIfChordExistsBySymbolStub = (): ICheckIfChordsExistsBySymbolsUsecase => {
+  class CheckIfChordExistsBySymbolStub implements ICheckIfChordsExistsBySymbolsUsecase {
     async exec (symbols: string[]): Promise<boolean> {
-      return false
+      return true
     }
   }
   return new CheckIfChordExistsBySymbolStub()
@@ -153,9 +153,9 @@ describe('AddCipher Controller', () => {
     expect(response).toEqual(badRequest(new InvalidParamError('rows.word.character')))
   })
 
-  test('Should return 400 if CheckIfChordExistsBySymbols return true', async () => {
+  test('Should return 400 if CheckIfChordExistsBySymbols return false', async () => {
     const { sut, checkIfChordExistsBySymbolStubs } = makeSut()
-    jest.spyOn(checkIfChordExistsBySymbolStubs, 'exec').mockReturnValueOnce(new Promise(resolve => resolve(true)))
+    jest.spyOn(checkIfChordExistsBySymbolStubs, 'exec').mockReturnValueOnce(new Promise(resolve => resolve(false)))
     const response = await sut.handle({
       body: makeFakeCipher()
     })

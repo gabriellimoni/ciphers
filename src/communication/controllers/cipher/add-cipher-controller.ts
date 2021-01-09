@@ -2,12 +2,12 @@ import { Cipher } from '../../../domain'
 import { InvalidParamError, RequiredParamError } from '../../errors'
 import { badRequest, ok, serverError } from '../../helpers/http'
 import { Controller, HttpRequest, HttpResponse } from '../../protocols'
-import { ICheckIfChordExistsBySymbolUsecase } from '../../../usecases/check-if-chord-exists-by-symbol-usecase'
+import { ICheckIfChordsExistsBySymbolsUsecase } from '../../../usecases/check-if-chords-exists-by-symbols-usecase'
 import { IAddCipherUsecase } from '../../../usecases/add-cipher-usecase'
 
 export class AddCipherController implements Controller {
   constructor (
-    private readonly checkIfChordExistsBySymbol: ICheckIfChordExistsBySymbolUsecase,
+    private readonly checkIfChordExistsBySymbol: ICheckIfChordsExistsBySymbolsUsecase,
     private readonly addCipher: IAddCipherUsecase
   ) {}
 
@@ -28,8 +28,8 @@ export class AddCipherController implements Controller {
       if (charError) return badRequest(charError)
 
       const allChordSymbols = getAllChordSymbols(cipher)
-      const someChordDoesNotExists = await this.checkIfChordExistsBySymbol.exec(allChordSymbols)
-      if (someChordDoesNotExists) return badRequest(new InvalidParamError('rows.word.character.chordSymbol'))
+      const allChordsExists = await this.checkIfChordExistsBySymbol.exec(allChordSymbols)
+      if (!allChordsExists) return badRequest(new InvalidParamError('rows.word.character.chordSymbol'))
 
       const createdCipher = await this.addCipher.exec(cipher)
 
