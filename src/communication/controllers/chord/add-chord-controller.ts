@@ -1,4 +1,5 @@
 import { IAddChordUsecase } from '../../../usecases/add-chord-usecase'
+import { ok, serverError } from '../../helpers/http'
 import { Controller, HttpRequest, HttpResponse } from '../../protocols'
 
 export class AddChordController implements Controller {
@@ -10,14 +11,9 @@ export class AddChordController implements Controller {
         symbol: httpRequest.body?.symbol,
         imagesUrls: httpRequest.body?.imagesUrls
       })
-      return {
-        statusCode: 200,
-        body: addedChord
-      }
+      return ok(addedChord)
     } catch (error) {
-      return {
-        statusCode: 500
-      }
+      return serverError(error)
     }
   }
 }
