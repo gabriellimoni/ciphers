@@ -17,4 +17,20 @@ describe('In Memory Chord Repository', () => {
       expect(chord.imagesUrls).toEqual(['any_image_urls'])
     })
   })
+
+  describe('findChordBySymbol)', () => {
+    beforeEach(() => chords.splice(0, chords.length))
+
+    test('Should have 1 chord in memory', async () => {
+      const inMemoryChordRepo = new InMemoryChordRepository()
+      await inMemoryChordRepo.addChord({
+        symbol: 'Any Symbol',
+        imagesUrls: ['any_image_urls']
+      })
+      const foundChord = await inMemoryChordRepo.findBySymbol('Any Symbol')
+      expect(foundChord.id).toBeTruthy()
+      expect(foundChord.symbol).toBe('Any Symbol')
+      expect(foundChord.imagesUrls).toEqual(['any_image_urls'])
+    })
+  })
 })
