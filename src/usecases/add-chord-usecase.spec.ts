@@ -54,6 +54,16 @@ describe('AddChord Usecase', () => {
     expect(promise).rejects.toThrow()
   })
 
+  test('Should throws if FindChordBySymbolRepository throws', async () => {
+    const { sut, findChordBySymbolRepositoryStub } = makeSut()
+    jest.spyOn(findChordBySymbolRepositoryStub, 'findBySymbol').mockReturnValueOnce(new Promise((resolve, reject) => reject(new Error())))
+    const promise = sut.exec({
+      imagesUrls: ['any_imageUrl'],
+      symbol: 'any_symbol'
+    })
+    expect(promise).rejects.toThrow()
+  })
+
   test('Should return null if FindChordBySymbolRepository returns a chord', async () => {
     const { sut, findChordBySymbolRepositoryStub } = makeSut()
     jest
