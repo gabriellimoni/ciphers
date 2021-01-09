@@ -8,17 +8,17 @@ import { AddCipherModel } from '../../../usecases/params/chord/add-cipher-param'
 
 interface SutTypes {
   sut: AddCipherController
-  checkIfChordExistsBySymbolStub: ICheckIfChordExistsBySymbolUsecase
+  checkIfChordExistsBySymbolStubs: ICheckIfChordExistsBySymbolUsecase
   addCipherStub: IAddCipherUsecase
 }
 
 const makeSut = (): SutTypes => {
-  const checkIfChordExistsBySymbolStub = makeCheckIfChordExistsBySymbolStub()
+  const checkIfChordExistsBySymbolStubs = makeCheckIfChordExistsBySymbolStub()
   const addCipherStub = makeAddCipherStub()
-  const sut = new AddCipherController(checkIfChordExistsBySymbolStub, addCipherStub)
+  const sut = new AddCipherController(checkIfChordExistsBySymbolStubs, addCipherStub)
   return {
     sut,
-    checkIfChordExistsBySymbolStub,
+    checkIfChordExistsBySymbolStubs,
     addCipherStub
   }
 }
@@ -154,8 +154,8 @@ describe('AddCipher Controller', () => {
   })
 
   test('Should return 400 if CheckIfChordExistsBySymbols return true', async () => {
-    const { sut, checkIfChordExistsBySymbolStub } = makeSut()
-    jest.spyOn(checkIfChordExistsBySymbolStub, 'exec').mockReturnValueOnce(new Promise(resolve => resolve(true)))
+    const { sut, checkIfChordExistsBySymbolStubs } = makeSut()
+    jest.spyOn(checkIfChordExistsBySymbolStubs, 'exec').mockReturnValueOnce(new Promise(resolve => resolve(true)))
     const response = await sut.handle({
       body: makeFakeCipher()
     })
@@ -163,8 +163,17 @@ describe('AddCipher Controller', () => {
   })
 
   test('Should return 500 if CheckIfChordExistsBySymbols throws', async () => {
-    const { sut, checkIfChordExistsBySymbolStub } = makeSut()
-    jest.spyOn(checkIfChordExistsBySymbolStub, 'exec').mockReturnValueOnce(new Promise((resolve, reject) => reject(new Error())))
+    const { sut, checkIfChordExistsBySymbolStubs } = makeSut()
+    jest.spyOn(checkIfChordExistsBySymbolStubs, 'exec').mockReturnValueOnce(new Promise((resolve, reject) => reject(new Error())))
+    const response = await sut.handle({
+      body: makeFakeCipher()
+    })
+    expect(response.statusCode).toBe(500)
+  })
+
+  test('Should return 500 if AddCipherUsecase throws', async () => {
+    const { sut, addCipherStub } = makeSut()
+    jest.spyOn(addCipherStub, 'exec').mockReturnValueOnce(new Promise((resolve, reject) => reject(new Error())))
     const response = await sut.handle({
       body: makeFakeCipher()
     })

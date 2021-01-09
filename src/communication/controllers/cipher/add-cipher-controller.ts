@@ -31,6 +31,8 @@ export class AddCipherController implements Controller {
       const someChordDoesNotExists = await this.checkIfChordExistsBySymbol.exec(allChordSymbols)
       if (someChordDoesNotExists) return badRequest(new InvalidParamError('rows.word.character.chordSymbol'))
 
+      await this.addCipher.exec(cipher)
+
       return null
     } catch (error) {
       return serverError(error)
