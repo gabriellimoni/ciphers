@@ -9,7 +9,8 @@ export class FindChordBySymbol implements IFindChordBySymbolUsecase {
     private readonly findChordBySymbolRepository: FindChordBySymbolRepository
   ) {}
 
-  async exec (symble: string): Promise<Chord> {
-    return null
+  async exec (symbol: string): Promise<Chord> {
+    const chord = await this.findChordBySymbolRepository.findBySymbol(symbol)
+    return chord
   }
 }
