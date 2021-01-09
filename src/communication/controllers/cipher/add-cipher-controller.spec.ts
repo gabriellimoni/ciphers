@@ -179,4 +179,14 @@ describe('AddCipher Controller', () => {
     })
     expect(response.statusCode).toBe(500)
   })
+
+  test('Should return 200 on success', async () => {
+    const { sut } = makeSut()
+    const response = await sut.handle({
+      body: makeFakeCipher()
+    })
+    expect(response.statusCode).toBe(200)
+    expect(response.body.id).toBeTruthy()
+    expect(response.body.rows).toBeFalsy()
+  })
 })

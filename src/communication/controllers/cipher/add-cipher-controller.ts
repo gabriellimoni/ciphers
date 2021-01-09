@@ -1,6 +1,6 @@
 import { Cipher } from '../../../domain'
 import { InvalidParamError, RequiredParamError } from '../../errors'
-import { badRequest, serverError } from '../../helpers/http'
+import { badRequest, ok, serverError } from '../../helpers/http'
 import { Controller, HttpRequest, HttpResponse } from '../../protocols'
 import { ICheckIfChordExistsBySymbolUsecase } from '../../../usecases/check-if-chord-exists-by-symbol-usecase'
 import { IAddCipherUsecase } from '../../../usecases/add-cipher-usecase'
@@ -31,9 +31,11 @@ export class AddCipherController implements Controller {
       const someChordDoesNotExists = await this.checkIfChordExistsBySymbol.exec(allChordSymbols)
       if (someChordDoesNotExists) return badRequest(new InvalidParamError('rows.word.character.chordSymbol'))
 
-      await this.addCipher.exec(cipher)
+      const createdCipher = await this.addCipher.exec(cipher)
 
-      return null
+      return ok({
+        id: createdCipher.id
+      })
     } catch (error) {
       return serverError(error)
     }
