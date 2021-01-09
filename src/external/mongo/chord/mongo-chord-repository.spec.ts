@@ -57,4 +57,20 @@ describe('Mongo Chord Repository', () => {
       expect(chord.imagesUrls).toEqual(['any_image_urls'])
     })
   })
+
+  describe('findBySymbols()', () => {
+    test('Should retrieve 2 chords from mongo', async () => {
+      await chordCollection.insertOne({
+        symbol: 'Any Symbol',
+        imagesUrls: ['any_image_urls']
+      })
+      await chordCollection.insertOne({
+        symbol: 'Any Symbol 2',
+        imagesUrls: ['any_image_urls', 'any_image_urls_2']
+      })
+      const mongoChordRepo = new MongoChordRepository()
+      const chords = await mongoChordRepo.findBySymbols(['Any Symbol', 'Any Symbol 2'])
+      expect(chords.length).toBe(2)
+    })
+  })
 })

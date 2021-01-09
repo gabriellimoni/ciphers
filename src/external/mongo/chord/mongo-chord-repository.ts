@@ -1,9 +1,9 @@
 import { Chord } from '../../../domain'
 import { AddChordModel } from '../../../usecases/params/chord/add-chord-param'
-import { AddChordRepository, FindChordBySymbolRepository } from '../../../usecases/protocols/chord'
+import { AddChordRepository, FindChordBySymbolRepository, FindChordsBySymbolsRepository } from '../../../usecases/protocols/chord'
 import { MongoHelper } from '../helpers/mongo-helper'
 
-export class MongoChordRepository implements AddChordRepository, FindChordBySymbolRepository {
+export class MongoChordRepository implements AddChordRepository, FindChordBySymbolRepository, FindChordsBySymbolsRepository {
   async addChord (chordToAdd: AddChordModel): Promise<Chord> {
     const chordCollection = await MongoHelper.getCollection('chords')
     const result = await chordCollection.insertOne(chordToAdd)
@@ -14,5 +14,15 @@ export class MongoChordRepository implements AddChordRepository, FindChordBySymb
     const chordCollection = await MongoHelper.getCollection('chords')
     const chord = await chordCollection.findOne({ symbol })
     return MongoHelper.map(chord)
+  }
+
+  async findBySymbols (symbols: string[]): Promise<Chord[]> {
+    const chordCollection = await MongoHelper.getCollection('chords')
+    const chords = await chordCollection.find({
+      symbol: {
+        $in: symbols
+      }
+    }).toArray()
+    return chords.map(MongoHelper.map)
   }
 }
