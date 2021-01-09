@@ -5,7 +5,7 @@ import { AddChordUsecase } from '../../../usecases/add-chord-usecase'
 
 export const makeAddChordController = (): Controller => {
   const inMemoryChordRepository = new InMemoryChordRepository()
-  const addChordUsecase = new AddChordUsecase(inMemoryChordRepository)
+  const addChordUsecase = new AddChordUsecase(inMemoryChordRepository, inMemoryChordRepository)
   const addChordController = new AddChordController(addChordUsecase)
   return addChordController
 }
