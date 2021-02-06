@@ -1,7 +1,7 @@
 import { Cipher } from '../domain'
 import { AddCipherUsecase } from './add-cipher-usecase'
 import { AddCipherModel } from './params/cipher/add-cipher-param'
-import { AddCipherRepository } from './protocols/chord'
+import { AddCipherRepository } from './protocols/cipher'
 
 interface SutTypes {
   sut: AddCipherUsecase
