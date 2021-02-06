@@ -54,4 +54,17 @@ describe('Mongo Cipher Repository', () => {
       expect(cipher.rows).toBeTruthy()
     })
   })
+
+  describe('findCipherById()', () => {
+    test('Should return 1 cipher from mongo', async () => {
+      const result = await cipherCollection.insertOne(makeFakeCipher())
+      const mongoCipherRepo = new MongoCipherRepository()
+      const findResult = await mongoCipherRepo.findCipherById(result.ops[0]._id)
+      expect(findResult).toBeTruthy()
+      expect(findResult).toMatchObject(expect.objectContaining({
+        ...makeFakeCipher(),
+        id: result.ops[0]._id
+      }))
+    })
+  })
 })
