@@ -13,6 +13,7 @@ export class MongoChordRepository implements AddChordRepository, FindChordBySymb
   async findBySymbol (symbol: string): Promise<Chord> {
     const chordCollection = await MongoHelper.getCollection('chords')
     const chord = await chordCollection.findOne({ symbol })
+    if (!chord) return null
     return MongoHelper.map(chord)
   }
 

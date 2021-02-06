@@ -56,6 +56,11 @@ describe('Mongo Chord Repository', () => {
       expect(chord.symbol).toBe('Any Symbol')
       expect(chord.imagesUrls).toEqual(['any_image_urls'])
     })
+    test('Should return null if chord doesnt exists on mongo', async () => {
+      const mongoChordRepo = new MongoChordRepository()
+      const chord = await mongoChordRepo.findBySymbol('Any Symbol')
+      expect(chord).toBeNull()
+    })
   })
 
   describe('findBySymbols()', () => {
