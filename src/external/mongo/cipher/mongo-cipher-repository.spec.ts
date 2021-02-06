@@ -22,6 +22,8 @@ const makeFakeCipher = (): Cipher => ({
   ]
 })
 
+const fakeObjectId = '601ed0c2e8106a3a6d5e1d76'
+
 describe('Mongo Cipher Repository', () => {
   let cipherCollection: Collection
 
@@ -69,7 +71,7 @@ describe('Mongo Cipher Repository', () => {
 
     test('Should return null if cipher doesnt exists on mongo', async () => {
       const mongoCipherRepo = new MongoCipherRepository()
-      const findResult = await mongoCipherRepo.findCipherById('non-existent-id')
+      const findResult = await mongoCipherRepo.findCipherById(fakeObjectId)
       expect(findResult).toBeNull()
     })
   })
