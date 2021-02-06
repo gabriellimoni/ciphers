@@ -14,6 +14,7 @@ export class MongoCipherRepository implements AddCipherRepository, FindCipherByI
   async findCipherById (id: string): Promise<Cipher> {
     const cipherCollection = await MongoHelper.getCollection('ciphers')
     const result = await cipherCollection.findOne({ _id: id })
+    if (!result) return null
     return MongoHelper.map(result)
   }
 }

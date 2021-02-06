@@ -66,5 +66,11 @@ describe('Mongo Cipher Repository', () => {
         id: result.ops[0]._id
       }))
     })
+
+    test('Should return null if cipher doesnt exists on mongo', async () => {
+      const mongoCipherRepo = new MongoCipherRepository()
+      const findResult = await mongoCipherRepo.findCipherById('non-existent-id')
+      expect(findResult).toBeNull()
+    })
   })
 })
