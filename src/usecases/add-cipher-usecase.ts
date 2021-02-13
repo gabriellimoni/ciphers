@@ -1,4 +1,4 @@
-import { AddCipherRepository } from './protocols/chord'
+import { AddCipherRepository } from './protocols/cipher'
 import { Usecase } from './protocols'
 import { AddCipherModel } from './params/cipher/add-cipher-param'
 import { Cipher } from '../domain'
